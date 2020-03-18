@@ -63,9 +63,9 @@ def get_community_by_region(city='bj',
             info = dict()
             try:
                 item = name.find('div', {'class': 'title'})
-                link = item.a.get('href')
                 title = item.get_text().strip('\n')
                 logging.info('%s', title)
+                link = item.a.get('href')
                 info['title'] = title
                 link = get_mobile_link(link, city)
                 info['link'] = link
