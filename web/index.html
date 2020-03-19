@@ -106,13 +106,18 @@
                     .draw();
             });
         });
+        $('label.toggle-vis').on('click', function(e) {
+            e.preventDefault();
+            var column = sub_table.column($(this).attr('data-column'));
+            column.visible(!column.visible());
+        });
     });
     </script>
 </head>
 
 <body>
     <h1>北京市朝阳区小区情况</h1>
-    <table id="data_table" class="table table-bordered table-hover">
+    <table id="data_table" class="table table-bordered table-hover" width="100%">
         <thead>
             <tr>
                 <th>商圈</th>
@@ -123,7 +128,157 @@
     <br />
     <h2>商圈内小区</h2>
     <br />
-    <table id="sub_table" class="table table-bordered table-hover">
+    <div class="btn-group-toggle" data-toggle="buttons">
+        展示列：
+        <label class="btn btn-light active" aria-pressed="true">
+            <input type="checkbox" checked>标题
+        </label>
+        <label class="btn btn-light toggle-vis active" data-column="2">
+            <input type="checkbox" checked>标签列表
+        </label>
+        <label class="btn btn-light toggle-vis active" data-column="3">
+            <input type="checkbox" checked>在售套数
+        </label>
+        <label class="btn btn-light toggle-vis active" data-column="4">
+            <input type="checkbox" checked>在租套数
+        </label>
+        <label class="btn btn-light toggle-vis active" data-column="5">
+            <input type="checkbox" checked>楼栋总数
+        </label>
+        <label class="btn btn-light toggle-vis active" data-column="6">
+            <input type="checkbox" checked>总户数
+        </label>
+        <label class="btn btn-light toggle-vis active" data-column="7">
+            <input type="checkbox" checked>均价
+        </label>
+        <label class="btn btn-light toggle-vis active" data-column="8">
+            <input type="checkbox" checked>建成年代
+        </label>
+        <label class="btn btn-light toggle-vis active" data-column="9">
+            <input type="checkbox" checked>建筑面积
+        </label>
+        <label class="btn btn-light toggle-vis active" data-column="10">
+            <input type="checkbox" checked>占地面积
+        </label>
+        <label class="btn btn-light toggle-vis active" data-column="11">
+            <input type="checkbox" checked>房屋用途
+        </label>
+        <label class="btn btn-light toggle-vis active" data-column="12">
+            <input type="checkbox" checked>产权年限
+        </label>
+        <label class="btn btn-light toggle-vis active" data-column="13">
+            <input type="checkbox" checked>建筑类型
+        </label>
+        <label class="btn btn-light toggle-vis active" data-column="14">
+            <input type="checkbox" checked>开发企业
+        </label>
+        <label class="btn btn-light toggle-vis active" data-column="15">
+            <input type="checkbox" checked>交易权属
+        </label>
+        <label class="btn btn-light toggle-vis active" data-column="16">
+            <input type="checkbox" checked>物业公司
+        </label>
+        <label class="btn btn-light toggle-vis active" data-column="17">
+            <input type="checkbox" checked>物业费用
+        </label>
+        <label class="btn btn-light toggle-vis active" data-column="18">
+            <input type="checkbox" checked>物业电话
+        </label>
+        <label class="btn btn-light toggle-vis active" data-column="19">
+            <input type="checkbox" checked>供暖类型
+        </label>
+        <label class="btn btn-light toggle-vis active" data-column="20">
+            <input type="checkbox" checked>供暖费用
+        </label>
+        <label class="btn btn-light toggle-vis active" data-column="21">
+            <input type="checkbox" checked>用水类型
+        </label>
+        <label class="btn btn-light toggle-vis active" data-column="22">
+            <input type="checkbox" checked>用电类型
+        </label>
+        <label class="btn btn-light toggle-vis active" data-column="23">
+            <input type="checkbox" checked>固定车位数
+        </label>
+        <label class="btn btn-light toggle-vis active" data-column="24">
+            <input type="checkbox" checked>停车费用
+        </label>
+        <label class="btn btn-light toggle-vis active" data-column="25">
+            <input type="checkbox" checked>燃气费用
+        </label>
+        <label class="btn btn-light toggle-vis active" data-column="26">
+            <input type="checkbox" checked>容积率
+        </label>
+        <label class="btn btn-light toggle-vis active" data-column="27">
+            <input type="checkbox" checked>绿化率
+        </label>
+        <label class="btn btn-light toggle-vis active" data-column="28">
+            <input type="checkbox" checked>人车分流
+        </label>
+        <label class="btn btn-light toggle-vis active" data-column="29">
+            <input type="checkbox" checked>是否封闭
+        </label>
+        <label class="btn btn-light toggle-vis active" data-column="30">
+            <input type="checkbox" checked>是否电梯房
+        </label>
+        <label class="btn btn-light toggle-vis active" data-column="31">
+            <input type="checkbox" checked>附近学校
+        </label>
+        <label class="btn btn-light toggle-vis active" data-column="32">
+            <input type="checkbox" checked>评分
+        </label>
+        <label class="btn btn-light toggle-vis active" data-column="33">
+            <input type="checkbox" checked>建筑品质
+        </label>
+        <label class="btn btn-light toggle-vis active" data-column="34">
+            <input type="checkbox" checked>户型设计
+        </label>
+        <label class="btn btn-light toggle-vis active" data-column="35">
+            <input type="checkbox" checked>交通条件
+        </label>
+        <label class="btn btn-light toggle-vis active" data-column="36">
+            <input type="checkbox" checked>教育质量
+        </label>
+        <label class="btn btn-light toggle-vis active" data-column="37">
+            <input type="checkbox" checked>商业环境
+        </label>
+        <label class="btn btn-light toggle-vis active" data-column="38">
+            <input type="checkbox" checked>花园景观
+        </label>
+        <label class="btn btn-light toggle-vis active" data-column="39">
+            <input type="checkbox" checked>物业管理
+        </label>
+        <label class="btn btn-light toggle-vis active" data-column="40">
+            <input type="checkbox" checked>游泳池
+        </label>
+        <label class="btn btn-light toggle-vis active" data-column="41">
+            <input type="checkbox" checked>小区花园
+        </label>
+        <label class="btn btn-light toggle-vis active" data-column="42">
+            <input type="checkbox" checked>运动场地
+        </label>
+        <label class="btn btn-light toggle-vis active" data-column="43">
+            <input type="checkbox" checked>康乐设施
+        </label>
+        <label class="btn btn-light toggle-vis active" data-column="44">
+            <input type="checkbox" checked>会所
+        </label>
+        <label class="btn btn-light toggle-vis active" data-column="45">
+            <input type="checkbox" checked>健身房
+        </label>
+        <label class="btn btn-light toggle-vis active" data-column="46">
+            <input type="checkbox" checked>大堂
+        </label>
+        <label class="btn btn-light toggle-vis active" data-column="47">
+            <input type="checkbox" checked>活动中心
+        </label>
+        <label class="btn btn-light toggle-vis active" data-column="48">
+            <input type="checkbox" checked>水系
+        </label>
+        <label class="btn btn-light toggle-vis active" data-column="49">
+            <input type="checkbox" checked>儿童游乐
+        </label>
+    </div>
+    <table id="sub_table" class="table table-bordered table-hover" width="100%">
         <thead>
             <tr>
                 <th>标题</th>
