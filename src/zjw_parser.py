@@ -27,24 +27,16 @@ def get_args():
         '--urls',
         type=dict,
         default={
-            u'1#住宅楼':
-            'http://bjjs.zjw.beijing.gov.cn/eportal/ui?pageId=393547&systemId=2&categoryId=1&salePermitId=6451425&buildingId=501881',
-            u'2#地下车库':
-            'http://bjjs.zjw.beijing.gov.cn/eportal/ui?pageId=393547&systemId=2&categoryId=1&salePermitId=6451425&buildingId=501880',
-            u'2#住宅楼':
-            'http://bjjs.zjw.beijing.gov.cn/eportal/ui?pageId=393547&systemId=2&categoryId=1&salePermitId=6451425&buildingId=501879',
-            u'3#住宅楼':
-            'http://bjjs.zjw.beijing.gov.cn/eportal/ui?pageId=393547&systemId=2&categoryId=1&salePermitId=6451425&buildingId=501878',
-            u'4#住宅楼':
-            'http://bjjs.zjw.beijing.gov.cn/eportal/ui?pageId=393547&systemId=2&categoryId=1&salePermitId=6451425&buildingId=501877',
-            u'5#住宅及配套楼':
-            'http://bjjs.zjw.beijing.gov.cn/eportal/ui?pageId=393547&systemId=2&categoryId=1&salePermitId=6451425&buildingId=501876',
-            u'8#住宅楼':
-            'http://bjjs.zjw.beijing.gov.cn/eportal/ui?pageId=393547&systemId=2&categoryId=1&salePermitId=6451425&buildingId=501875'
+            u'1#地下车库':
+            'http://bjjs.zjw.beijing.gov.cn/eportal/ui?pageId=320833&systemId=2&categoryId=1&salePermitId=7240988&buildingId=508627'
+            # u'6#住宅及商业楼':
+            # 'http://bjjs.zjw.beijing.gov.cn/eportal/ui?pageId=320833&systemId=2&categoryId=1&salePermitId=7240988&buildingId=508626',
+            # u'7#住宅楼':
+            # 'http://bjjs.zjw.beijing.gov.cn/eportal/ui?pageId=320833&systemId=2&categoryId=1&salePermitId=7240988&buildingId=508605'
         },
         help='Urls.')
     parser.add_argument('--output_path',
-                        default='house_info.json',
+                        default='house_info/house_info-1.json',
                         help='Output path.')
     args = parser.parse_args()
     return args
@@ -86,10 +78,16 @@ def get_building_info(url):
     if not soup:
         logging.warning('Cannot parse %s', url)
         return list()
-    items = soup.find_all('span', {'class': 'f12a6'})
+    # items = soup.find_all('span', {'class': 'f12a6'})
+    items = soup.find_all(
+        'div', {
+            'style':
+            'width:130px;background:#33CC00;float:left;border: 1px solid white;margin: 1px 1px 0 0;'
+        })
     if items:
         for item in items:
-            item = item.next_sibling.next_sibling
+            # item = item.next_sibling.next_sibling
+            item = list(item.children)[1]
             url = 'http://bjjs.zjw.beijing.gov.cn' + item.get('href')
             house_info = get_house_info(url)
             house_info['url'] = url
@@ -103,6 +101,8 @@ def show_building_info(building_info):
     Args:
         building_info (list): building info.
     """
+    # 戊类仓储用房：25723.30元/平
+    unit_price2 = 25723.30
     floor_info = dict()
     for house_info in building_info:
         floor_id = int(house_info[u'房间号'].split('-')[-1][:-2])
@@ -120,32 +120,43 @@ def show_building_info(building_info):
         elif u'住宅建筑面积' in house_info:
             area = house_info[u'住宅建筑面积']
             if u'戊类仓储用房建筑面积' in house_info:
-                area += ' + ' + house_info[u'戊类仓储用房建筑面积']
+                area += '+' + house_info[u'戊类仓储用房建筑面积']
         area = area.replace(u'平方米', '')
-        floor_info[floor_id].append([house_info[u'房间号'], unit_price, area])
+        total_price = 0
+        if '+' in area:
+            area1, area2 = map(float, area.split('+'))
+            total_price = area1 * float(unit_price) + area2 * unit_price2
+        elif area != '':
+            total_price = float(area) * float(unit_price)
+        floor_info[floor_id].append(
+            [house_info[u'房间号'], unit_price, area, total_price])
     print(u'单价')
     list_floor_id = sorted(list(floor_info.keys()), reverse=True)
     for floor_id in list_floor_id:
-        floor = sorted(floor_info[floor_id])
+        floor = sorted(floor_info[floor_id], reverse=True)
         print(' '.join([
             '{}({})'.format(house_info[0], house_info[1])
             for house_info in floor
         ]))
     print(u'面积')
     for floor_id in list_floor_id:
-        floor = sorted(floor_info[floor_id])
+        floor = sorted(floor_info[floor_id], reverse=True)
         print(' '.join([
             '{}({})'.format(house_info[0], house_info[2])
             for house_info in floor
         ]))
+    print(u'总价(万)')
+    for floor_id in list_floor_id:
+        floor = sorted(floor_info[floor_id], reverse=True)
+        print(' '.join([
+            '{}({:.2f})'.format(house_info[0], house_info[3] / 10000)
+            for house_info in floor
+        ]))
     print(u'总价')
     for floor_id in list_floor_id:
-        floor = sorted(floor_info[floor_id])
+        floor = sorted(floor_info[floor_id], reverse=True)
         print(' '.join([
-            '{}({:.2f})'.format(
-                house_info[0],
-                float(house_info[1]) *
-                sum(map(float, house_info[2].split(' + '))) / 10000)
+            '{}({:.2f})'.format(house_info[0], house_info[3])
             for house_info in floor
         ]))
 
@@ -175,10 +186,11 @@ def main():
     results = json.load(open(args.output_path))
     # show
     for name, building_info in results.items():
-        if name == u'2#地下车库':
+        if name.endswith('地下车库'):
             continue
         print(name)
         show_building_info(building_info)
+        print('\n')
 
 
 if __name__ == "__main__":
